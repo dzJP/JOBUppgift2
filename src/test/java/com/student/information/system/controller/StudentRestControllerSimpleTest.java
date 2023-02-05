@@ -5,19 +5,28 @@ import com.student.information.system.service.StudentService;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import java.util.List;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @RunWith(SpringRunner.class)
 public class StudentRestControllerSimpleTest {
+
+    private int count;
 
     private StudentRestController studentRestController;
 
@@ -27,6 +36,11 @@ public class StudentRestControllerSimpleTest {
     @Before
     public void initializeStudentRestController() {
         this.studentRestController = new StudentRestController(studentService);
+    }
+
+    @Test
+    public void shouldPrintOutThatWeAreRunningATest() {
+        System.out.println("Running a test..");
     }
 
     @Test
@@ -72,5 +86,14 @@ public class StudentRestControllerSimpleTest {
     public void testIfStudentNumberIsEmptyShouldNotCallDatabase() {
         studentRestController.getStudentByStudentNumber(null);
         verify(studentService,Mockito.never()).findByStudentNumber(anyLong());
+    }
+
+    @Test
+    public void testShouldPassIfStudentDeletedByStudentNumber() {
+        Student studentDummyMock = new Student();
+        given(studentService.findByStudentNumber(11L)).willReturn(studentDummyMock);
+        Mockito.doNothing().when(studentService).deleteStudentById(any(String.class));
+        verify(studentService,Mockito.never()).deleteStudentById(anyString());
+
     }
 }
