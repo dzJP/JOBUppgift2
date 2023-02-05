@@ -18,8 +18,13 @@ import java.util.List;
 @RequestMapping("/students")
 public class StudentRestController {
 
-    @Autowired
+
     private StudentService studentService;
+
+    @Autowired
+    public StudentRestController(StudentService studentService) {
+        this.studentService = studentService;
+    }
 
     @GetMapping(value = "/")
     public List<StudentDTO> getAllStudents() {
@@ -28,7 +33,16 @@ public class StudentRestController {
 
     @GetMapping(value = "/byStudentNumber/{studentNumber}")
     public StudentDTO getStudentByStudentNumber(@PathVariable("studentNumber") Long studentNumber) {
-        return ObjectMapperUtils.map(studentService.findByStudentNumber(studentNumber), StudentDTO.class);
+        if (studentNumber != null) {
+            Student student = studentService.findByStudentNumber(studentNumber);
+            if (student != null) {
+                return ObjectMapperUtils.map(student, StudentDTO.class);
+            } else {
+                return new StudentDTO();
+            }
+        } else {
+            return null;
+        }
     }
 
     @GetMapping(value = "/byEmail/{email}")

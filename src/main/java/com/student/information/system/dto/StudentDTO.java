@@ -75,4 +75,11 @@ public class StudentDTO {
         this.gpa = gpa;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass() == StudentDTO.class)
+            return this.id.equals(((StudentDTO)obj).getId());
+        else
+            return false;
+    }
 }
